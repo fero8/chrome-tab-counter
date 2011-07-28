@@ -1,0 +1,18 @@
+{
+  "name": "Tab Counter",
+  "version": "1.0.1",
+  "description": "Shows a counter of currently opened tabs and the number of all-time opened tabs.",
+  "browser_action": {
+    "default_icon": "icon48.png",
+	"popup": "popup.html"
+  },
+  "background_page": "background.html",
+  "icons": {
+	"16": "icon16.png",
+	"31": "icon31.png",
+    "48": "icon48.png"
+  },
+  "permissions": [
+    "tabs"
+  ]
+}

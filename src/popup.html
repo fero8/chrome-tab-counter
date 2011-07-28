@@ -1,0 +1,57 @@
+<html>
+<head>
+	<script type="text/javascript" src="prototype.js"></script>
+	<script type="text/javascript" src="scripts.js"></script>
+	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.1/scriptaculous.js?load=effects"></script>-->
+</head>
+
+<body>
+<style>
+body {
+  min-width:400px;
+  overflow-x:hidden;
+  font-size: 12px;
+  font-family: Helvetica, Arial;
+}
+ul, li, p, div, menu, img { margin: 0; padding: 0; border: none; }
+li { list-style: none; margin-bottom: 5px; border-bottom: 1px solid #ededed; padding-bottom: 2;}
+h2 { font-size: 17px; }
+h3 { font-size: 14px; margin-bottom: 3px; }
+h3 a { text-decoration: none; }
+p.time {
+	color: #333; font-size: 10px;
+}
+#loader { text-align: center; vertical-align: middle; line-height: 60px; }
+#footer { margin-top: 20px; }
+</style>
+
+<script>
+
+$$('.counter').invoke('update', localStorage.tabsTotal);
+
+function showPopup(data) {
+	chrome.browserAction.setBadgeText({
+	  text: response.meets.size() > 0 ? response.meets.size().toString() : ''
+	});
+	chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 255]});
+
+}
+
+</script>
+
+<h2>Chrome Tab Counter</h2>
+
+<div id="output">
+
+	<div class="totalCounter"></div>
+
+	<div id="loader"><img src="ajax-loader.gif" alt="loading"  /></div>
+
+	<div id="footer">
+		<p id="login-link" style="display: none;"><a href="http://sportmeets.com/login" target="_blank">You need to login &rarr;</a></p>
+		<p id="dash-link" style="display: none;"><a href="http://sportmeets.com/dashboard" target="_blank">Go to my dashboard &rarr;</a></p>
+	</div>
+</div>
+
+</body>
+</html>
