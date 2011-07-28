@@ -29,28 +29,18 @@ p.time {
 
 $$('.counter').invoke('update', localStorage.tabsTotal);
 
-function showPopup(data) {
-	chrome.browserAction.setBadgeText({
-	  text: response.meets.size() > 0 ? response.meets.size().toString() : ''
-	});
-	chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 255]});
-
-}
-
 </script>
 
 <h2>Chrome Tab Counter</h2>
 
 <div id="output">
 
-	<div class="totalCounter"></div>
+	<p>
+		<strong class="totalCounter"></strong>
+	</p>
 
-	<div id="loader"><img src="ajax-loader.gif" alt="loading"  /></div>
+	<p><a href="#" onclick="resetCounter(); return false;">Reset the counter</a></p>
 
-	<div id="footer">
-		<p id="login-link" style="display: none;"><a href="http://sportmeets.com/login" target="_blank">You need to login &rarr;</a></p>
-		<p id="dash-link" style="display: none;"><a href="http://sportmeets.com/dashboard" target="_blank">Go to my dashboard &rarr;</a></p>
-	</div>
 </div>
 
 </body>
