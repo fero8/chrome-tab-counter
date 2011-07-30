@@ -2,10 +2,9 @@
 <head>
 	<script type="text/javascript" src="prototype.js"></script>
 	<script type="text/javascript" src="scripts.js"></script>
-	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.1/scriptaculous.js?load=effects"></script>-->
 </head>
 
-<body>
+<body onload="initPopup();">
 <style>
 body {
   min-width:400px;
@@ -25,21 +24,21 @@ p.time {
 #footer { margin-top: 20px; }
 </style>
 
-<script>
-
-$$('.counter').invoke('update', localStorage.tabsTotal);
-
-</script>
 
 <h2>Chrome Tab Counter</h2>
 
 <div id="output">
 
 	<p>
-		<strong class="totalCounter"></strong>
+		Open tabs: <strong class="totalOpen"></strong>
 	</p>
 
-	<p><a href="#" onclick="resetCounter(); return false;">Reset the counter</a></p>
+	<p>
+		All-time tabs: <strong class="totalCounter"></strong> &nbsp;
+		<a href="#" onclick="resetTabTotalCount(); return false;">reset &raquo;</a>
+	</p>
+
+	<p></p>
 
 </div>
 

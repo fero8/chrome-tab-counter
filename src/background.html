@@ -3,23 +3,8 @@
 	<title>Chrome Tab Counter background</title>
 	<script type="text/javascript" src="prototype.js"></script>
 	<script type="text/javascript" src="scripts.js"></script>
-	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.1/scriptaculous.js?load=effects"></script>-->
-
-<script>
-
-function init() {
-
-	localStorage.setItem("tabsTotal");
-	localStorage.tabsTotal = 0;
+<script></script>
 	
-	chrome.tabs.onCreated.addListener(function(tab) {
-		incrementTabCount();
-	});
-
-	updateTabCount();
-}
-
-</script>
 </head>
 
 <body onload="init()">
