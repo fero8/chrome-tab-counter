@@ -9,9 +9,9 @@ Storage.prototype.getObject = function(key) {
 function share(network) {
 
     if (network == 'twitter') {
-        window.open('http://twitter.com/home?status=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' opened browser tabs. Who\'s got more? //via bit.ly/ptSWJu'));
+        window.open('http://twitter.com/home?status=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open browser tabs. Who\'s got more? //via bit.ly/ptSWJu'));
     } else {
-        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://bit.ly/ptSWJu') + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' opened browser tabs.'));
+        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://bit.ly/ptSWJu') + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open browser tabs.'));
     }
 
     return false;
