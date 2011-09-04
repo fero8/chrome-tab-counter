@@ -6,6 +6,17 @@ Storage.prototype.getObject = function(key) {
     return this.getItem(key) && JSON.parse(this.getItem(key));
 }
 
+function share(network) {
+
+    if (network == 'twitter') {
+        window.open('http://twitter.com/home?status=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' opened browser tabs. Who\'s got more? //via bit.ly/ptSWJu'));
+    } else {
+        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://bit.ly/ptSWJu') + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' opened browser tabs.'));
+    }
+
+    return false;
+}
+
 function init() {
 
 	localStorage.setObject("tabsOpen", 0);
@@ -15,7 +26,6 @@ function init() {
 		localStorage.setObject("tabsTotal", 0);
 
 	chrome.tabs.onCreated.addListener(function(tab) {
-        console.log('opened');
 		incrementTabOpenCount(1);
 	});
 
@@ -34,8 +44,6 @@ function incrementTabOpenCount(count) {
 	localStorage.setObject('tabsOpen', localStorage.getObject('tabsOpen') + count);
     localStorage.setObject('tabsTotal', localStorage.getObject('tabsTotal') + count);
 	updateTabOpenCount();
-
-    console.log('increment');
 }
 
 function decrementTabOpenCount() {

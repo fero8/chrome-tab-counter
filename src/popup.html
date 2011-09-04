@@ -20,8 +20,9 @@ h3 a { text-decoration: none; }
 p.time {
 	color: #333; font-size: 10px;
 }
+p.social { margin: 15px 0; }
 #loader { text-align: center; vertical-align: middle; line-height: 60px; }
-#footer { margin-top: 20px; }
+#footer { margin-top: 20px; color: #ccc; font-size: 10px;}
 </style>
 
 
@@ -38,8 +39,16 @@ p.time {
 		<a href="#" onclick="resetTabTotalCount(); return false;">reset &raquo;</a>
 	</p>
 
-	<p></p>
+	<p class="social">
+		<a id="social-twitter" href="http://twitter.com/share" class="twitter-share-button-xxx" data-count="none" data-related="fero8:Developer" onclick="return share('twitter');">Tweet</a>
+		<!--|
+		<a id="social-fb" href="http://www.facebook.com/sharer.php?t=" onclick="return share('fb');">Share on Facebook</a>-->
+	</p>
 
+
+	<div id="footer">
+		Created by <a href="http://fero8.com/" target="_blank">fero8.com</a>
+	</div>
 </div>
 
 </body>
