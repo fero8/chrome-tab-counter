@@ -9,9 +9,9 @@ Storage.prototype.getObject = function(key) {
 function share(network) {
 
     if (network == 'twitter') {
-        window.open('http://twitter.com/home?status=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open browser tabs. Who\'s got more? //via bit.ly/ptSWJu'));
+        window.open('http://twitter.com/home?status=' + encodeURIComponent('Current browser tabs count: ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time opened tabs. //via bit.ly/ptSWJu #chrome'));
     } else {
-        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://bit.ly/ptSWJu') + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open browser tabs.'));
+        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://bit.ly/ptSWJu') + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time-opened browser tabs.'));
     }
 
     return false;
