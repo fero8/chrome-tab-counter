@@ -1,12 +1,16 @@
 {
   "name": "Chrome Tab Counter",
-  "version": "1.0.4",
+  "version": "1.0.5",
+  "manifest_version": 2,
   "description": "Shows a counter of currently opened browser tabs and the number of all-time opened tabs.",
   "browser_action": {
+  	"default_name": "Chrome Tab Counter",
     "default_icon": "icon48.png",
-	"popup": "popup.html"
+	"default_popup": "popup.html"
   },
-  "background_page": "background.html",
+	"background": {
+		"scripts": ["prototype.js", "scripts.js", "bg.js"]
+	},
   "icons": {
 	"16": "icon16.png",
 	"31": "icon31.png",

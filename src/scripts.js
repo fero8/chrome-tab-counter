@@ -30,7 +30,7 @@ function init() {
 	});
 
 	chrome.tabs.onRemoved.addListener(function(tab) {
-		decrementTabOpenCount(1);
+		decrementTabOpenCount();
 	});
 
 	updateTabTotalCount();
