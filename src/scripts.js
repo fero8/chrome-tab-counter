@@ -6,15 +6,27 @@ Storage.prototype.getObject = function(key) {
     return this.getItem(key) && JSON.parse(this.getItem(key));
 }
 
-function share(network) {
+function shareListeners() {
 
-    if (network == 'twitter') {
-        window.open('http://twitter.com/home?status=' + encodeURIComponent('Current browser tabs count: ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time opened tabs. //via bit.ly/ptSWJu #chrome'));
-    } else {
-        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://bit.ly/ptSWJu') + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time-opened browser tabs.'));
-    }
+	var storeURL = 'https://chrome.google.com/webstore/detail/fhnegjjodccfaliddboelcleikbmapik';
 
-    return false;
+	$('social-fb').observe('click', function(event) {
+		event.stop();
+
+		chrome.windows.create({
+			'url': 'http://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(storeURL) + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time-opened browser tabs.'),
+			'type': 'popup'
+		});
+	});
+
+	$('social-twitter').observe('click', function(event) {
+		event.stop();
+
+		chrome.windows.create({
+			'url': 'http://twitter.com/home?status=' + encodeURIComponent('Current browser tabs count: ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time opened tabs. //via bit.ly/ptSWJu #chrome'),
+			'type': 'popup'
+		});
+	});
 }
 
 function init() {
@@ -76,4 +88,6 @@ function updateTabTotalCount() {
 function initPopup() {
     $$('.totalCounter').invoke('update', localStorage.tabsTotal);
     $$('.totalOpen').invoke('update', localStorage.tabsOpen);
+
+	shareListeners();
 }

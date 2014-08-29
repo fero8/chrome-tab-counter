@@ -1,6 +1,6 @@
 {
   "name": "Chrome Tab Counter",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "manifest_version": 2,
   "description": "Shows a counter of currently opened browser tabs and the number of all-time opened tabs.",
   "browser_action": {
