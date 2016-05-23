@@ -1,4 +1,5 @@
 *~
 *.swp
+src.pem
 ._*
 .idea
