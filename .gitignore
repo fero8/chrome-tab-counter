@@ -1,5 +1,7 @@
 *~
 *.swp
+.DS_Store
+src.crx
 src.pem
 ._*
 .idea
