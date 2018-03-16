@@ -1,9 +1,10 @@
 Chrome Tab Counter
 ==================
 
-Shows a counter of currently opened tabs and the number of all-time opened tabs.
+Shows a counter of currently open tabs, open windows and the number of all-time opened tabs.
 
 Currently published in the Chrome Web Store:
+
 https://chrome.google.com/webstore/detail/chrome-tab-counter/fhnegjjodccfaliddboelcleikbmapik
 
 
