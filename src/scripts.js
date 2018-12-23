@@ -6,7 +6,7 @@ Storage.prototype.getObject = function(key) {
     return this.getItem(key) && JSON.parse(this.getItem(key));
 };
 
-function shareListeners() {
+function addListeners() {
 
 	var storeURL = 'https://chrome.google.com/webstore/detail/fhnegjjodccfaliddboelcleikbmapik';
 
@@ -27,12 +27,19 @@ function shareListeners() {
 			'type': 'popup'
 		});
 	});
+
+	$('reset-all-tabs').observe('click', function(event) {
+    event.stop();
+
+    resetTabTotalCount();
+  });
 }
 
 function init() {
 
 	localStorage.setObject('windowsOpen', 0);
 	localStorage.setObject('tabsOpen', 0);
+  localStorage.setObject('tabsWindowCurrentOpen', 0);
 
 	var tabsTotal = localStorage.getObject('tabsTotal');
 	if (!tabsTotal)
@@ -54,6 +61,11 @@ function init() {
 		decrementWindowOpenCount();
 	});
 
+  chrome.windows.onFocusChanged.addListener(function(tab) {
+    updateWindowCurrentCount();
+  });
+
+  getCurrentWindowTabCount();
 	updateTabTotalCount();
 }
 
@@ -95,14 +107,21 @@ function updateTabOpenCount() {
 	chrome.browserAction.setBadgeBackgroundColor({ "color": [89, 65, 0, 255] });
 }
 
-function resetTabOpenCount() {
-	localStorage.setObject('tabsOpen', 0);
-
-	updateTabOpenCount();
-}
-
 function resetTabTotalCount() {
 	localStorage.setObject('tabsTotal', 0);
+
+	updatePopupCounts();
+}
+
+function getCurrentWindowTabCount() {
+  chrome.windows.getCurrent({ 'populate': true }, function(window) {
+    localStorage.setObject('tabsWindowCurrentOpen', window.tabs.size());
+  });
+}
+function updateWindowCurrentCount() {
+  getCurrentWindowTabCount();
+
+  updatePopupCounts();
 }
 
 function updateTabTotalCount() {
@@ -115,10 +134,15 @@ function updateTabTotalCount() {
 	});
 }
 
-function initPopup() {
-	$$('.totalCounter').invoke('update', localStorage.tabsTotal);
-	$$('.totalOpen').invoke('update', localStorage.tabsOpen);
-	$$('.windowsOpen').invoke('update', localStorage.windowsOpen);
+function updatePopupCounts() {
+  $$('.totalCounter').invoke('update', localStorage.tabsTotal);
+  $$('.totalOpen').invoke('update', localStorage.tabsOpen);
+  $$('.windowsOpen').invoke('update', localStorage.windowsOpen);
+  $$('.windowCurrentOpen').invoke('update', localStorage.tabsWindowCurrentOpen);
+}
 
-	shareListeners();
+function initPopup() {
+  updatePopupCounts();
+
+	addListeners();
 }
