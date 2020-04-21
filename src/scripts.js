@@ -29,21 +29,31 @@ function addListeners() {
 	});
 
 	$('reset-all-tabs').observe('click', function(event) {
-    event.stop();
+		event.stop();
 
-    resetTabTotalCount();
-  });
+		resetTabTotalCount();
+  	});
+
+  	$('reset-max-tabs').observe('click', function(event) {
+		event.stop();
+		  
+  		resetTabMaxCount();
+	});
 }
 
 function init() {
 
 	localStorage.setObject('windowsOpen', 0);
 	localStorage.setObject('tabsOpen', 0);
-  localStorage.setObject('tabsWindowCurrentOpen', 0);
+    localStorage.setObject('tabsWindowCurrentOpen', 0);
 
 	var tabsTotal = localStorage.getObject('tabsTotal');
 	if (!tabsTotal)
 		localStorage.setObject('tabsTotal', 0);
+
+	var tabsMax = localStorage.getObject('tabsMax');
+	if (!tabsMax)
+		localStorage.setObject('tabsMax', 0);
 
 	chrome.tabs.onCreated.addListener(function(tab) {
 		incrementTabOpenCount(1);
@@ -61,11 +71,11 @@ function init() {
 		decrementWindowOpenCount();
 	});
 
-  chrome.windows.onFocusChanged.addListener(function(tab) {
-    updateWindowCurrentCount();
-  });
-
-  getCurrentWindowTabCount();
+    chrome.windows.onFocusChanged.addListener(function(tab) {
+        updateWindowCurrentCount();
+    });
+  
+    getCurrentWindowTabCount();
 	updateTabTotalCount();
 }
 
@@ -93,6 +103,12 @@ function incrementTabOpenCount(count) {
 	localStorage.setObject('tabsOpen', localStorage.getObject('tabsOpen') + count);
 	localStorage.setObject('tabsTotal', localStorage.getObject('tabsTotal') + count);
 
+	var tabsOpen = localStorage.getObject('tabsOpen');
+	var tabsMax = localStorage.getObject('tabsMax');
+	if (tabsOpen > tabsMax) {
+		localStorage.setObject('tabsMax', tabsOpen);
+	}
+
 	updateTabOpenCount();
 }
 
@@ -109,6 +125,12 @@ function updateTabOpenCount() {
 
 function resetTabTotalCount() {
 	localStorage.setObject('tabsTotal', 0);
+
+	updatePopupCounts();
+}
+
+function resetTabMaxCount() {
+	localStorage.setObject('tabsMax', 0);
 
 	updatePopupCounts();
 }
@@ -135,6 +157,7 @@ function updateTabTotalCount() {
 }
 
 function updatePopupCounts() {
+  $$('.maxCounter').invoke('update', localStorage.tabsMax);
   $$('.totalCounter').invoke('update', localStorage.tabsTotal);
   $$('.totalOpen').invoke('update', localStorage.tabsOpen);
   $$('.windowsOpen').invoke('update', localStorage.windowsOpen);
