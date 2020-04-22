@@ -55,23 +55,23 @@ function init() {
 	if (!tabsMax)
 		localStorage.setObject('tabsMax', 0);
 
-	chrome.tabs.onCreated.addListener(function(tab) {
+	chrome.tabs.onCreated.addListener(function() {
 		incrementTabOpenCount(1);
 	});
 
-	chrome.tabs.onRemoved.addListener(function(tab) {
+	chrome.tabs.onRemoved.addListener(function() {
 		decrementTabOpenCount();
 	});
 
-	chrome.windows.onCreated.addListener(function(tab) {
+	chrome.windows.onCreated.addListener(function() {
 		incrementWindowOpenCount();
 	});
 
-	chrome.windows.onRemoved.addListener(function(tab) {
+	chrome.windows.onRemoved.addListener(function() {
 		decrementWindowOpenCount();
 	});
 
-    chrome.windows.onFocusChanged.addListener(function(tab) {
+    chrome.windows.onFocusChanged.addListener(function() {
         updateWindowCurrentCount();
     });
   
@@ -120,7 +120,8 @@ function decrementTabOpenCount() {
 
 function updateTabOpenCount() {
 	chrome.browserAction.setBadgeText({text: localStorage.getObject('tabsOpen').toString()});
-	chrome.browserAction.setBadgeBackgroundColor({ "color": [89, 65, 0, 255] });
+	//chrome.browserAction.setBadgeBackgroundColor({ "color": [89, 65, 0, 255] });
+  chrome.browserAction.setBadgeBackgroundColor({ "color": [200, 0, 0, 255] });
 }
 
 function resetTabTotalCount() {
