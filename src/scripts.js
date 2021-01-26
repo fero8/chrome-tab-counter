@@ -14,7 +14,7 @@ function addListeners() {
 		event.stop();
 
 		chrome.windows.create({
-			'url': 'http://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(storeURL) + '&t=' + encodeURIComponent('I have ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time-opened browser tabs.'),
+			'url': 'http://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(storeURL) + '&t=' + encodeURIComponent('I have ' + localStorage.getObject('tabsOpen').toString() + ' open & ' + localStorage.getObject('tabsTotal').toString() + ' all-time-opened browser tabs.'),
 			'type': 'popup'
 		});
 	});
@@ -23,7 +23,7 @@ function addListeners() {
 		event.stop();
 
 		chrome.windows.create({
-			'url': 'http://twitter.com/home?status=' + encodeURIComponent('Current browser tabs count: ' + localStorage.tabsOpen + ' open & ' + localStorage.tabsTotal + ' all-time opened tabs. //via bit.ly/ptSWJu #chrome'),
+			'url': 'http://twitter.com/home?status=' + encodeURIComponent('Current browser tabs count: ' + localStorage.getObject('tabsOpen').toString() + ' open & ' + localStorage.getObject('tabsTotal').toString() + ' all-time opened tabs. //via bit.ly/ptSWJu #chrome'),
 			'type': 'popup'
 		});
 	});
@@ -34,18 +34,24 @@ function addListeners() {
 		resetTabTotalCount();
   	});
 
-  	$('reset-max-tabs').observe('click', function(event) {
+	$('reset-max-tabs').observe('click', function(event) {
 		event.stop();
 		  
   		resetTabMaxCount();
 	});
+
+  $('iconBgColor').observe('change', function(event) {
+    event.stop();
+
+    updateIconBgColorInput();
+  });
 }
 
 function init() {
 
 	localStorage.setObject('windowsOpen', 0);
 	localStorage.setObject('tabsOpen', 0);
-    localStorage.setObject('tabsWindowCurrentOpen', 0);
+	localStorage.setObject('tabsWindowCurrentOpen', 0);
 
 	var tabsTotal = localStorage.getObject('tabsTotal');
 	if (!tabsTotal)
@@ -120,8 +126,8 @@ function decrementTabOpenCount() {
 
 function updateTabOpenCount() {
 	chrome.browserAction.setBadgeText({text: localStorage.getObject('tabsOpen').toString()});
-	//chrome.browserAction.setBadgeBackgroundColor({ "color": [89, 65, 0, 255] });
-  chrome.browserAction.setBadgeBackgroundColor({ "color": [200, 0, 0, 255] });
+  //chrome.browserAction.setBadgeBackgroundColor({ "color": [89, 65, 0, 255] });
+  chrome.browserAction.setBadgeBackgroundColor({ color: localStorage.getObject('iconBgColor').toString() });
 }
 
 function resetTabTotalCount() {
@@ -157,12 +163,22 @@ function updateTabTotalCount() {
 	});
 }
 
+function updateIconBgColorInput() {
+  localStorage.setObject('iconBgColor', $('iconBgColor').value);
+  updateTabOpenCount();
+}
+
 function updatePopupCounts() {
-  $$('.maxCounter').invoke('update', localStorage.tabsMax);
-  $$('.totalCounter').invoke('update', localStorage.tabsTotal);
-  $$('.totalOpen').invoke('update', localStorage.tabsOpen);
-  $$('.windowsOpen').invoke('update', localStorage.windowsOpen);
-  $$('.windowCurrentOpen').invoke('update', localStorage.tabsWindowCurrentOpen);
+  $$('.maxCounter').invoke('update', localStorage.getObject('tabsMax'));
+  $$('.totalCounter').invoke('update', localStorage.getObject('tabsTotal'));
+  $$('.totalOpen').invoke('update', localStorage.getObject('tabsOpen'));
+  $$('.windowsOpen').invoke('update', localStorage.getObject('windowsOpen'));
+  $$('.windowCurrentOpen').invoke('update', localStorage.getObject('tabsWindowCurrentOpen'));
+
+  var iconInput = $('iconBgColor');
+  if (iconInput) {
+    iconInput.value = localStorage.getObject('iconBgColor').toString();
+  }
 }
 
 function initPopup() {

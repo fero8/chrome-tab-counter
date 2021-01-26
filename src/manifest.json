@@ -1,6 +1,6 @@
 {
   "name": "Chrome Tab Counter",
-  "version": "1.1.2",
+  "version": "1.2",
   "manifest_version": 2,
   "description": "Shows a counter of open tabs in the extensions bar. Also records the number of opened windows and all-time opened tabs.",
   "browser_action": {
