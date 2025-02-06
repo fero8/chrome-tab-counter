@@ -1,16 +1,17 @@
 {
   "name": "Chrome Tab Counter",
-  "version": "1.2",
-  "manifest_version": 2,
-  "description": "Shows a counter of open tabs in the extensions bar. Also records the number of opened windows and all-time opened tabs.",
-  "browser_action": {
-  	"default_name": "Chrome Tab Counter",
+  "version": "1.3",
+  "manifest_version": 3,
+  "description": "Shows a count of open windows, open tabs, max concurrent open tabs and all-time open tabs.",
+  "action": {
+    "default_name": "Chrome Tab Counter",
     "default_icon": "icon48.png",
-		"default_popup": "popup.html"
+    "default_popup": "popup.html"
   },
-	"background": {
-		"scripts": ["prototype.js", "scripts.js", "bg.js"]
-	},
+  "background": {
+    "service_worker": "bg.js",
+    "type": "module"
+  },
   "icons": {
 		"16": "icon16.png",
 		"32": "icon32.png",
@@ -18,6 +19,7 @@
 		"128": "icon128.png"
   },
   "permissions": [
-    "tabs"
+    "tabs",
+    "storage"
   ]
 }

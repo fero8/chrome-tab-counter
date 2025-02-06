@@ -1,70 +1,234 @@
 <html>
 <head>
-	<script type="text/javascript" src="prototype.js"></script>
-	<script type="text/javascript" src="scripts.js"></script>
-    <script type="text/javascript" src="popup.js"></script>
-</head>
+	<script type="module" src="popup.js"></script>
+	<style type="text/css">
+		body {
+			min-width: 400px;
+			width: 500px;
+			max-width: 900px;
+			overflow-x: hidden;
+			font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+			margin: 20px;
+			background-color: #f5f5f5;
+		}
 
-<style type="text/css">
-	body {
-		min-width:400px;
-		overflow-x:hidden;
-		font-size: 12px;
-		font-family: Helvetica, Arial;
-	}
-	ul, li, p, div, menu, img { margin: 0; padding: 0; border: none; }
-	li { list-style: none; margin-bottom: 5px; border-bottom: 1px solid #ededed; padding-bottom: 2px;}
-	h2 { font-size: 30px; color: #555; }
-	h3 { font-size: 14px; margin-bottom: 3px; }
-	h3 a { text-decoration: none; }
-	p.social { margin: 15px 0; }
-	#output p { font-size: 20px; margin: 0 0 15px 0; color: #333; }
-	#footer { margin-top: 20px; color: #ccc; font-size: 14px; }
-	#footer a { color: #ccc; }
-</style>
+		h2 {
+			font-size: 24px;
+			color: #333;
+			margin-bottom: 20px;
+		}
+
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 15px;
+			margin-bottom: 20px;
+		}
+
+		@media (max-width: 600px) {
+			.stats-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		@media (max-width: 400px) {
+			.stats-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.stat-box {
+			background: white;
+			border-radius: 8px;
+			padding: 15px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+			min-width: 0; /* Prevents grid blowout */
+		}
+
+		.stat-label {
+			color: #666;
+			font-size: 14px;
+			margin-bottom: 5px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.stat-value {
+			color: #333;
+			font-size: 24px;
+			font-weight: 600;
+		}
+
+		.reset-link {
+			font-size: 12px;
+			color: #666;
+			text-decoration: none;
+			margin-left: 10px;
+		}
+
+		.reset-link:hover {
+			color: #333;
+			text-decoration: underline;
+		}
+
+		.color-settings {
+			margin-top: 20px;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 15px;
+			min-width: 400px;
+		}
+
+		.color-box {
+			background: white;
+			border-radius: 8px;
+			padding: 15px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+			min-width: 0;
+		}
+
+		.color-input {
+			margin: 0;
+			padding: 0;
+			background: none;
+			box-shadow: none;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.color-input label {
+			color: #666;
+			font-size: 14px;
+			flex-grow: 1;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.color-input input[type="color"] {
+			-webkit-appearance: none;
+			width: 32px;
+			height: 32px;
+			padding: 0;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			flex-shrink: 0;
+		}
+
+		.color-input input[type="color"]::-webkit-color-swatch-wrapper {
+			padding: 0;
+			border-radius: 4px;
+		}
+
+		.color-input input[type="color"]::-webkit-color-swatch {
+			border: none;
+			border-radius: 4px;
+			box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+		}
+
+		.social {
+			margin-top: 20px;
+			text-align: center;
+		}
+
+		.social a {
+			color: #666;
+			text-decoration: none;
+			margin: 0 10px;
+			font-size: 14px;
+		}
+
+		.social a:hover {
+			color: #333;
+		}
+
+		#footer {
+			margin-top: 20px;
+			text-align: center;
+			color: #999;
+			font-size: 12px;
+		}
+
+		#footer a {
+			color: #999;
+			text-decoration: none;
+		}
+
+		#footer a:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
 
 <body>
 
 	<h2>Chrome Tab Counter</h2>
 
 	<div id="output">
+		<div class="stats-grid">
+			<div class="stat-box">
+				<div class="stat-label">Open windows</div>
+				<div class="stat-value windowsOpen">0</div>
+			</div>
 
-		<p>
-			Open windows: <strong class="windowsOpen"></strong>
-		</p>
+			<div class="stat-box">
+				<div class="stat-label">Open tabs</div>
+				<div class="stat-value totalOpen">0</div>
+			</div>
 
-		<p>
-			Open tabs: <strong class="totalOpen"></strong>
-		</p>
+			<div class="stat-box">
+				<div class="stat-label">Current window open tabs</div>
+				<div class="stat-value windowCurrentOpen">0</div>
+			</div>
 
-		<p>
-			Current window open tabs: <strong class="windowCurrentOpen"></strong>
-		</p>
+			<div class="stat-box">
+				<div class="stat-label">Current window pinned tabs</div>
+				<div class="stat-value windowCurrentPinned">0</div>
+			</div>
 
-		<p>
-			Max concurrent tabs: <strong class="maxCounter"></strong> &nbsp;
-			<a id="reset-max-tabs" href="#">reset &raquo;</a>
-		</p>
+			<div class="stat-box">
+				<div class="stat-label">All-time tabs</div>
+				<div class="stat-value">
+					<span class="totalCounter">0</span>
+					<a id="reset-all-tabs" href="#" class="reset-link">reset</a>
+				</div>
+			</div>
 
-		<p>
-			All-time tabs: <strong class="totalCounter"></strong> &nbsp;
-			<a id="reset-all-tabs" href="#">reset &raquo;</a>
-		</p>
+			<div class="stat-box">
+				<div class="stat-label">Max concurrent tabs</div>
+				<div class="stat-value">
+					<span class="maxCounter">0</span>
+					<a id="reset-max-tabs" href="#" class="reset-link">reset</a>
+				</div>
+			</div>
+		</div>
 
-		<p>
-			Icon background color (e.g. #000000): <br/>
-			<input id="iconBgColor" type="text" value="">
-		</p>
+		<div class="color-settings">
+			<div class="color-box">
+				<div class="color-input">
+					<label for="iconBgColorPicker">Badge background color</label>
+					<input id="iconBgColorPicker" type="color" value="#FF0000">
+				</div>
+			</div>
+			<div class="color-box">
+				<div class="color-input">
+					<label for="iconTextColorPicker">Badge text color</label>
+					<input id="iconTextColorPicker" type="color" value="#FFFFFF">
+				</div>
+			</div>
+		</div>
 
 		<p class="social">
-			<a id="social-twitter" href="#" target="_blank" class="twitter-share-button-xxx" data-count="none" data-related="fero8:Developer">Tweet</a>
-			|
-			<a id="social-fb" href="#" target="_blank">Share on Facebook</a>
+			<a id="social-twitter" href="#" target="_blank">Tweet</a>
+			<!-- |
+			<a id="social-fb" href="#" target="_blank">Share on Facebook</a> -->
 		</p>
 
-
 		<div id="footer">
-			Created by <a href="https://fero8.com/" target="_blank">fero8.com</a>
+			Created by <a href="https://fero8.com/" target="_blank">fero8</a>
 		</div>
 	</div>
 
