@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1
+
+- permissions updated
+
 ## 1.3
 
 - Upgraded to Chrome manifest v3
