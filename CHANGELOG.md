@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.2
+
+- Fixed non-updating open tabs count
+- Added real-time updates to popup
+
 ## 1.3.1
 
 - permissions updated

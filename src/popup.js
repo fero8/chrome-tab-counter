@@ -116,3 +116,10 @@ async function initializePopup() {
 
 // Add event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', initializePopup);
+
+// Add message listener for real-time updates
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'updateCounts') {
+        updatePopupCounts();
+    }
+});

@@ -44,11 +44,13 @@ async function init() {
 		});
 
 		chrome.windows.onFocusChanged.addListener(async () => {
-			await updateWindowCurrentCount();
+			await getCurrentWindowTabCount();
+			await updateTabTotalCount();
 		});
 
 		await getCurrentWindowTabCount();
 		await updateTabTotalCount();
+		await updateBadge();
 	} catch (error) {
 		console.error('Error during initialization:', error);
 	}
@@ -70,29 +72,40 @@ async function decrementWindowOpenCount() {
 	updateTabOpenCount();
 }
 
-async function incrementTabOpenCount(count) {
-	if (!count) count = 1;
-	
-	const tabsOpen = await getStorageItem('tabsOpen') || 0;
-	const tabsTotal = await getStorageItem('tabsTotal') || 0;
-	const tabsMax = await getStorageItem('tabsMax') || 0;
-	
-	const newTabsOpen = tabsOpen + count;
-	await setStorageItem('tabsOpen', newTabsOpen);
-	await setStorageItem('tabsTotal', tabsTotal + count);
-	
-	if (newTabsOpen > tabsMax) {
-		await setStorageItem('tabsMax', newTabsOpen);
+async function incrementTabOpenCount(count = 1) {
+	try {
+		const tabsOpen = await getStorageItem('tabsOpen') || 0;
+		const tabsTotal = await getStorageItem('tabsTotal') || 0;
+		const tabsMax = await getStorageItem('tabsMax') || 0;
+		
+		const newTabsOpen = tabsOpen + count;
+		
+		await Promise.all([
+			setStorageItem('tabsOpen', newTabsOpen),
+			setStorageItem('tabsTotal', tabsTotal + count)
+		]);
+		
+		if (newTabsOpen > tabsMax) {
+			await setStorageItem('tabsMax', newTabsOpen);
+		}
+		
+		await updateTabTotalCount();
+		await updateBadge();
+	} catch (error) {
+		console.error('Error incrementing tab count:', error);
 	}
-	
-	await updateTabOpenCount();
 }
 
 async function decrementTabOpenCount() {
-	const tabsOpen = await getStorageItem('tabsOpen') || 0;
-	if (tabsOpen > 0) {  // Add check to prevent negative values
-		await setStorageItem('tabsOpen', tabsOpen - 1);
-		await updateTabOpenCount();
+	try {
+		const tabsOpen = await getStorageItem('tabsOpen') || 0;
+		if (tabsOpen > 0) {
+			await setStorageItem('tabsOpen', tabsOpen - 1);
+			await updateTabTotalCount();
+			await updateBadge();
+		}
+	} catch (error) {
+		console.error('Error decrementing tab count:', error);
 	}
 }
 
@@ -135,16 +148,20 @@ async function updateWindowCurrentCount() {
 }
 
 async function updateTabTotalCount() {
-	const windows = await chrome.windows.getAll({ populate: true });
-	const totalTabs = windows.reduce((sum, window) => sum + window.tabs.length, 0);
-	
-	await setStorageItem('windowsOpen', windows.length);
-	await setStorageItem('tabsOpen', totalTabs);
-
-	//console.log('All windows count: ' + windows.length);
-	//console.log('Updated total tab count:', totalTabs);
-
-	await updateTabOpenCount();
+	try {
+		const windows = await chrome.windows.getAll({ populate: true });
+		const totalTabs = windows.reduce((sum, window) => sum + window.tabs.length, 0);
+		
+		await Promise.all([
+			setStorageItem('windowsOpen', windows.length),
+			setStorageItem('tabsOpen', totalTabs)
+		]);
+		
+		await updateBadge();
+		await notifyPopup();
+	} catch (error) {
+		console.error('Error updating total tab count:', error);
+	}
 }
 
 async function updateIconBgColorInput(color) {
@@ -195,6 +212,14 @@ async function updateBadge() {
 			chrome.action.setBadgeTextColor({ color: '#FFFFFF' })
 		]);
 	}
+}
+
+// Add this function to handle sending updates to popup
+async function notifyPopup() {
+	// Simply try to send the message, chrome.runtime will handle if popup exists
+	await chrome.runtime.sendMessage({ action: 'updateCounts' }).catch(() => {
+		// Silently fail if popup is closed
+	});
 }
 
 export {
