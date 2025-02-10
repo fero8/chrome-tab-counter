@@ -222,6 +222,32 @@ async function notifyPopup() {
 	});
 }
 
+// We do this only once, when the extension is opened
+export async function migrateStorage(tabsTotal, tabsMax) {
+	try {
+		const oldTotal = parseInt(tabsTotal) || 0;
+		const oldMax = parseInt(tabsMax) || 0;
+
+		if (!isNaN(oldTotal) && oldTotal > 0) {
+			const currentTotal = await getStorageItem('tabsTotal') || 0;
+			const newTotal = currentTotal + oldTotal;
+
+			if (newTotal >= 0) {
+				await setStorageItem('tabsTotal', newTotal);
+			}
+		}
+
+		if (!isNaN(oldMax) && oldMax > 0) {
+			const currentMax = await getStorageItem('tabsMax') || 0;
+			const newMax = Math.max(currentMax, oldMax);
+
+			if (newMax >= 0) {
+				await setStorageItem('tabsMax', newMax);
+			}
+		}
+	} catch (error) {}
+}
+
 export {
 	init,
 	setStorageItem,

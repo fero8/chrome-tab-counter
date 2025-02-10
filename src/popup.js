@@ -1,4 +1,4 @@
-import { getStorageItem, setStorageItem, resetTabTotalCount, resetTabMaxCount, updateIconBgColorInput, updateIconTextColorInput, getCurrentWindowTabCount } from './scripts.js';
+import { getStorageItem, setStorageItem, resetTabTotalCount, resetTabMaxCount, updateIconBgColorInput, updateIconTextColorInput, getCurrentWindowTabCount, migrateStorage } from './scripts.js';
 
 export async function updatePopupCounts() {
   const tabsMax = await getStorageItem('tabsMax');
@@ -25,6 +25,15 @@ export async function updatePopupCounts() {
 }
 
 async function initPopupStorage() {
+  try {
+    if (await getStorageItem('migratedStorage') != '1') {
+      await migrateStorage(localStorage['tabsTotal'] || 0, localStorage['tabsMax'] || 0);
+      await setStorageItem('migratedStorage', '1');
+    }
+  } catch (error) {
+    console.error('Error during storage migration:', error);
+  }
+
   try {
     const color = await getStorageItem('iconBgColor');
     
