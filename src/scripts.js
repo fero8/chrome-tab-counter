@@ -9,26 +9,9 @@ async function getStorageItem(key) {
 
 async function init() {
 	try {
-		const windows = await chrome.windows.getAll({ populate: true });
-		const totalTabs = windows.reduce((sum, window) => sum + window.tabs.length, 0);
-		
-		await setStorageItem('windowsOpen', windows.length);
-		await setStorageItem('tabsOpen', totalTabs);
-		await setStorageItem('tabsWindowCurrentOpen', 0);
-
-		const tabsTotal = await getStorageItem('tabsTotal');
-		if (!tabsTotal || tabsTotal < totalTabs) {
-			await setStorageItem('tabsTotal', totalTabs);
-		}
-
-		const tabsMax = await getStorageItem('tabsMax');
-		if (!tabsMax || totalTabs > tabsMax) {
-			await setStorageItem('tabsMax', totalTabs);
-		}
-
 		// Add listeners for tab and window changes
 		chrome.tabs.onCreated.addListener(async () => {
-			await incrementTabOpenCount(1);
+			await incrementTabOpenCount();
 		});
 
 		chrome.tabs.onRemoved.addListener(async () => {
@@ -56,41 +39,24 @@ async function init() {
 	}
 }
 
-async function incrementWindowOpenCount(count) {
-	if (!count)
-		count = 1;
-	const current = await getStorageItem('windowsOpen');
-	await setStorageItem('windowsOpen', current + count);
-
-	updateTabOpenCount();
+async function incrementWindowOpenCount() {
+	updateTabTotalCount();
 }
 
 async function decrementWindowOpenCount() {
-	const current = await getStorageItem('windowsOpen');
-	await setStorageItem('windowsOpen', current - 1);
-
-	updateTabOpenCount();
+	updateTabTotalCount();
 }
 
-async function incrementTabOpenCount(count = 1) {
+async function incrementTabOpenCount() {
 	try {
-		const tabsOpen = await getStorageItem('tabsOpen') || 0;
 		const tabsTotal = await getStorageItem('tabsTotal') || 0;
-		const tabsMax = await getStorageItem('tabsMax') || 0;
-		
-		const newTabsOpen = tabsOpen + count;
-		
-		await Promise.all([
-			setStorageItem('tabsOpen', newTabsOpen),
-			setStorageItem('tabsTotal', tabsTotal + count)
-		]);
-		
-		if (newTabsOpen > tabsMax) {
-			await setStorageItem('tabsMax', newTabsOpen);
+		if (tabsTotal >= 0) {
+			await setStorageItem('tabsTotal', tabsTotal + 1);
 		}
-		
+
 		await updateTabTotalCount();
 		await updateBadge();
+
 	} catch (error) {
 		console.error('Error incrementing tab count:', error);
 	}
@@ -98,26 +64,17 @@ async function incrementTabOpenCount(count = 1) {
 
 async function decrementTabOpenCount() {
 	try {
-		const tabsOpen = await getStorageItem('tabsOpen') || 0;
-		if (tabsOpen > 0) {
-			await setStorageItem('tabsOpen', tabsOpen - 1);
-			await updateTabTotalCount();
-			await updateBadge();
-		}
+		await updateTabTotalCount();
+		await updateBadge();
 	} catch (error) {
 		console.error('Error decrementing tab count:', error);
 	}
 }
 
-async function updateTabOpenCount() {
-	await updateBadge();
-}
-
 async function resetTabTotalCount() {
 	try {
-		const currentTabs = await getStorageItem('tabsOpen') || 0;
-		await setStorageItem('tabsTotal', currentTabs);
-		await updateBadge();
+		await setStorageItem('tabsTotal', 0);
+		await updateTabTotalCount();
 	} catch (error) {
 		console.error('Error resetting total tab count:', error);
 	}
@@ -125,9 +82,8 @@ async function resetTabTotalCount() {
 
 async function resetTabMaxCount() {
 	try {
-		const currentTabs = await getStorageItem('tabsOpen') || 0;
-		await setStorageItem('tabsMax', currentTabs);
-		await updateBadge();
+		await setStorageItem('tabsMax', 0);
+		await updateTabTotalCount();
 	} catch (error) {
 		console.error('Error resetting max tab count:', error);
 	}
@@ -139,24 +95,24 @@ async function getCurrentWindowTabCount() {
 
 	await setStorageItem('tabsWindowCurrentOpen', window.tabs.length);
 	await setStorageItem('tabsWindowCurrentPinned', pinnedTabs);
-	
-	//console.log('Current window ' + window.id + ' tab count:', window.tabs.length);
-}
-
-async function updateWindowCurrentCount() {
-	await getCurrentWindowTabCount();
 }
 
 async function updateTabTotalCount() {
 	try {
 		const windows = await chrome.windows.getAll({ populate: true });
-		const totalTabs = windows.reduce((sum, window) => sum + window.tabs.length, 0);
+		const totalOpenTabs = windows.reduce((sum, window) => sum + window.tabs.length, 0);
 		
+		const tabsMax = await getStorageItem('tabsMax') || 0;
+
 		await Promise.all([
 			setStorageItem('windowsOpen', windows.length),
-			setStorageItem('tabsOpen', totalTabs)
+			setStorageItem('tabsOpen', totalOpenTabs)
 		]);
 		
+		if (!tabsMax || totalOpenTabs > tabsMax) {
+			await setStorageItem('tabsMax', totalOpenTabs);
+		}
+
 		await updateBadge();
 		await notifyPopup();
 	} catch (error) {
@@ -253,7 +209,6 @@ export {
 	setStorageItem,
 	getStorageItem,
 	getCurrentWindowTabCount,
-	updateTabOpenCount,
 	updateTabTotalCount,
 	resetTabTotalCount,
 	resetTabMaxCount,

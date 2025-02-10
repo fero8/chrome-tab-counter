@@ -33,16 +33,6 @@ async function initPopupStorage() {
   } catch (error) {
     console.error('Error during storage migration:', error);
   }
-
-  try {
-    const color = await getStorageItem('iconBgColor');
-    
-    if (typeof color != 'string' || !color) {
-      await setStorageItem('iconBgColor', '#FF0000');
-    }
-  } catch (error) {
-    console.error('Failed to initialize popup storage:', error);
-  }
 }
 
 async function addListeners() {
@@ -114,6 +104,9 @@ async function addListeners() {
 
 async function initializePopup() {
   try {
+    // Establish connection with background script
+    chrome.runtime.connect({ name: 'popup' });
+    
     await initPopupStorage();
     await getCurrentWindowTabCount();
     await updatePopupCounts();

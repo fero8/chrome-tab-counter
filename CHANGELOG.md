@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.3
+
+- Fixed non-updating popup - service worker ping
+- Migration of old stats to new storage
+
 ## 1.3.2
 
 - Fixed non-updating open tabs count
