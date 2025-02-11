@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.4
+
+- Fixed non-updating popup after OS sleep/inactivity - service worker ping via alarms
+
 ## 1.3.3
 
 - Fixed non-updating popup - service worker ping

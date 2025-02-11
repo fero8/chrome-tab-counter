@@ -1,6 +1,6 @@
 {
   "name": "Chrome Tab Counter",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "manifest_version": 3,
   "description": "Shows a count of open windows, open tabs, max concurrent open tabs and all-time open tabs.",
   "action": {
@@ -19,6 +19,7 @@
 		"128": "icon128.png"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "alarms"
   ]
 }
